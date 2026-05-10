@@ -61,7 +61,7 @@ export default function Navbar() {
         {/* CTA */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="https://github.com/neretj/pii-firewall-web"
+            href="https://github.com/neretj/llm-pii-firewall"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm px-4 py-1.5 rounded-lg border transition-colors"

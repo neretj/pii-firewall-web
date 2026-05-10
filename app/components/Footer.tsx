@@ -28,7 +28,7 @@ export default function Footer() {
               Get started now
             </a>
             <a
-              href="https://github.com/neretj/pii-firewall-web"
+              href="https://github.com/neretj/llm-pii-firewall"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm border transition-colors"
@@ -69,7 +69,7 @@ export default function Footer() {
           <span>Apache 2.0 License</span>
           <span>Built for privacy-first AI applications</span>
           <a
-            href="https://github.com/neretj/pii-firewall-web"
+            href="https://github.com/neretj/llm-pii-firewall"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 transition-colors hover:text-white"
