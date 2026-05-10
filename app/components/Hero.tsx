@@ -63,19 +63,17 @@ export default function Hero() {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-black leading-tight tracking-tight mb-6">
-            <span style={{ color: "var(--text)" }}>LLMs deserve </span>
+            <span style={{ color: "var(--text)" }}>PII Firewall</span>
             <br />
-            <span className="gradient-text">privacy-first</span>
-            <br />
-            <span style={{ color: "var(--text)" }}>AI.</span>
+            <span className="gradient-text">for LLM apps</span>
           </h1>
 
           <p className="text-lg mb-8 leading-relaxed" style={{ color: "var(--text-muted)" }}>
-            PII Firewall intercepts text <strong style={{ color: "var(--text)" }}>before</strong> it
-            reaches your LLM, strips or transforms sensitive data, forwards the sanitized prompt,
-            and re-hydrates the response — all transparently. Supports{" "}
-            <strong style={{ color: "var(--accent2)" }}>streaming</strong>, works in{" "}
-            <strong style={{ color: "var(--accent2)" }}>55+ languages</strong>.
+            Detect, anonymize and rehydrate sensitive data{" "}
+            <strong style={{ color: "var(--text)" }}>before it reaches</strong> OpenAI, Anthropic
+            or any LLM provider. 55+ languages, domain-aware keep rules, GDPR-ready vault —
+            drop into your stack in{" "}
+            <strong style={{ color: "var(--accent2)" }}>3 lines of code</strong>.
           </p>
 
           {/* Metrics row */}
