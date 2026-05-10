@@ -1,6 +1,36 @@
 
 "use client";
 
+import { useState } from "react";
+import { Copy, Check } from "lucide-react";
+
+function CopyButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg transition-all"
+      style={{
+        color: copied ? "var(--accent2)" : "var(--text-muted)",
+        background: copied ? "rgba(0,212,170,0.1)" : "rgba(255,255,255,0.05)",
+        border: `1px solid ${copied ? "rgba(0,212,170,0.3)" : "var(--border)"}`,
+      }}
+      title="Copy to clipboard"
+    >
+      {copied ? <Check size={12} /> : <Copy size={12} />}
+      {copied ? "Copied!" : "Copy"}
+    </button>
+  );
+}
+
 const installSteps = [
   {
     step: "1",
@@ -105,6 +135,14 @@ export default function Quickstart() {
 
               {/* Code */}
               <div style={{ background: "#0d1117" }}>
+                <div className="flex items-center justify-between px-4 pt-3 pb-0">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#ff5f57" }} />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#febc2e" }} />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#28c840" }} />
+                  </div>
+                  <CopyButton code={s.code} />
+                </div>
                 <pre
                   className="p-6 text-sm overflow-x-auto"
                   style={{
@@ -147,14 +185,15 @@ export default function Quickstart() {
               style={{ border: "1px solid var(--border)" }}
             >
               <div
-                className="px-4 py-3 text-xs font-bold border-b"
+                className="px-4 py-3 text-xs font-bold border-b flex items-center justify-between"
                 style={{
                   background: "var(--surface2)",
                   borderColor: "var(--border)",
                   color: "var(--text-muted)",
                 }}
               >
-                {e.title}
+                <span>{e.title}</span>
+                <CopyButton code={e.code} />
               </div>
               <pre
                 className="p-4 text-xs overflow-x-auto"

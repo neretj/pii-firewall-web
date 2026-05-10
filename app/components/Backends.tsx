@@ -61,6 +61,30 @@ const backends = [
     best: "Clinical NLP where biomedical entity accuracy is critical.",
     icon: "🤗",
   },
+  {
+    id: "opf",
+    name: "OPF",
+    tag: "token-level",
+    tagColor: "#50fa7b",
+    latency: "50–200 ms",
+    latencyColor: "#50fa7b",
+    install: "[opf]",
+    strengths: ["Token-level PII classifier", "Language-agnostic", "Structured output with spans", "Viterbi decoding"],
+    best: "Environments needing a lightweight yet precise token classifier without Presidio.",
+    icon: "🔬",
+  },
+  {
+    id: "nemotron",
+    name: "Nemotron",
+    tag: "nvidia",
+    tagColor: "#76b900",
+    latency: "100–300 ms",
+    latencyColor: "#76b900",
+    install: "[opf]",
+    strengths: ["NVIDIA privacy-filter fine-tune", "OPF-compatible runtime", "High recall on free text", "GPU acceleration"],
+    best: "Maximum precision on unstructured free-form text using NVIDIA's fine-tuned model.",
+    icon: "🟢",
+  },
 ];
 
 const dispositions = [
@@ -94,7 +118,7 @@ export default function Backends() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-24">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-24">
           {backends.map((b) => (
             <div
               key={b.id}

@@ -57,6 +57,13 @@ const features = [
     accent: "var(--accent3)",
     badge: "High performance",
   },
+  {
+    icon: "🔁",
+    title: "Streaming Support",
+    desc: "secure_call_stream() yields rehydrated tokens as soon as they arrive from the LLM — no buffering. Plug into SSE or WebSocket endpoints for real-time privacy-safe chat applications.",
+    accent: "var(--accent)",
+    badge: "Real-time",
+  },
 ];
 
 export default function Features() {

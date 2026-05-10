@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Terminal, Shield } from "lucide-react";
+import { ArrowRight, Terminal } from "lucide-react";
 
 const codeSnippet = `from privacy_firewall import create_firewall
 
@@ -55,7 +55,10 @@ export default function Hero() {
               color: "#a89dff",
             }}
           >
-            <Shield size={12} />
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#a89dff" }} />
+              <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#a89dff" }} />
+            </span>
             Open Source · Apache 2.0
           </div>
 
@@ -70,7 +73,8 @@ export default function Hero() {
           <p className="text-lg mb-8 leading-relaxed" style={{ color: "var(--text-muted)" }}>
             PII Firewall intercepts text <strong style={{ color: "var(--text)" }}>before</strong> it
             reaches your LLM, strips or transforms sensitive data, forwards the sanitized prompt,
-            and re-hydrates the response — all transparently. In{" "}
+            and re-hydrates the response — all transparently. Supports{" "}
+            <strong style={{ color: "var(--accent2)" }}>streaming</strong>, works in{" "}
             <strong style={{ color: "var(--accent2)" }}>55+ languages</strong>.
           </p>
 
@@ -79,8 +83,8 @@ export default function Hero() {
             {[
               { value: "55+", label: "Languages" },
               { value: "7", label: "Disposition actions" },
-              { value: "5", label: "Detection backends" },
-              { value: "3", label: "Domain profiles" },
+              { value: "7", label: "Detection backends" },
+              { value: "4", label: "Domain profiles" },
             ].map((m) => (
               <div key={m.label}>
                 <div className="text-2xl font-black gradient-text">{m.value}</div>
@@ -124,10 +128,9 @@ export default function Hero() {
         {/* Right — code preview */}
         <div className="animate-float">
           <div
-            className="rounded-2xl overflow-hidden shadow-2xl"
+            className="rounded-2xl overflow-hidden shadow-2xl glow-border relative"
             style={{
-              border: "1px solid var(--border)",
-              boxShadow: "0 0 60px rgba(108,99,255,0.12)",
+              border: "1px solid rgba(108,99,255,0.4)",
             }}
           >
             {/* Window chrome */}
@@ -146,7 +149,7 @@ export default function Hero() {
 
             {/* Code */}
             <pre
-              className="p-6 text-sm leading-relaxed overflow-x-auto"
+              className="p-6 text-sm leading-relaxed overflow-x-auto code-scan relative"
               style={{ background: "#0d1117", color: "#c9d1d9", fontFamily: "'Fira Code', 'JetBrains Mono', monospace" }}
             >
               <code>
