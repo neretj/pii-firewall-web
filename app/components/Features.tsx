@@ -1,88 +1,102 @@
 "use client";
 
+import { motion } from "framer-motion";
+import GlowCard from "./ui/GlowCard";
+import {
+  Languages, RefreshCw, Stethoscope, ClipboardList,
+  Trash2, Plug, Component, Timer, Radio
+} from "lucide-react";
+
 const features = [
   {
-    icon: "🌍",
+    Icon: Languages,
     title: "55+ Language Auto-Detection",
-    desc: "Language is detected automatically per message with thread-level caching for zero latency after the first call. Locale-specific patterns for Spanish DNI, US SSN, French INSEE, German Steuernummer, Italian CF, Portuguese NIF, and global fallbacks.",
+    desc: "Language detected per message with thread-level caching. Locale-specific patterns for Spanish DNI, US SSN, French INSEE, German Steuernummer, Italian CF, and more.",
     accent: "var(--accent2)",
     badge: "Zero config",
   },
   {
-    icon: "🔄",
+    Icon: RefreshCw,
     title: "Reversible Pseudonymization",
-    desc: "A secure in-memory (or SQLite) vault stores original↔token mappings per tenant/case/thread. PERSON_1 always maps back to the same real name within a conversation. Rehydration is automatic.",
+    desc: "In-memory or SQLite vault stores original token mappings per tenant/case/thread. [PERSON_001] always maps back to the same real name within a session.",
     accent: "var(--accent)",
     badge: "GDPR ready",
   },
   {
-    icon: "🏥",
+    Icon: Stethoscope,
     title: "Domain-Aware Keep Rules",
-    desc: "Medical terms (diagnoses, medications, procedures) are kept — not redacted — in the healthcare profile. Finance keeps amounts. Legal keeps case numbers. The LLM still receives the context it needs.",
+    desc: "Medical terms (diagnoses, medications, procedures) pass through untouched in the healthcare profile. Finance keeps amounts. Legal keeps citations. The LLM gets what it needs.",
     accent: "#ffd166",
     badge: "Smart",
   },
   {
-    icon: "📋",
+    Icon: ClipboardList,
     title: "Full Audit Trace",
-    desc: "Every call produces a TraceRecord with detected entities, their types, confidence scores, applied replacements, and residual PII warnings. Build compliance dashboards or feed your SIEM.",
+    desc: "Every call returns a TraceRecord with detected entities, confidence scores, and applied replacements. Feed your SIEM or build compliance dashboards on top.",
     accent: "var(--accent3)",
     badge: "Compliance",
   },
   {
-    icon: "🗑️",
+    Icon: Trash2,
     title: "GDPR Right to Forget",
-    desc: "A single API call wipes all vault mappings for a case or thread, satisfying Art. 17 GDPR right to erasure. Per-tenant isolation ensures data never crosses customer boundaries.",
+    desc: "A single API call wipes all vault mappings for a case or thread, satisfying Art. 17 GDPR. Per-tenant isolation ensures data never crosses customer boundaries.",
     accent: "var(--accent2)",
     badge: "Art. 17",
   },
   {
-    icon: "🔌",
+    Icon: Plug,
     title: "Any LLM, Any Framework",
-    desc: "Works with OpenAI, Anthropic, Mistral, local models, or any HTTP LLM endpoint. Deploy as a Python SDK, FastAPI microservice, or Docker container. Node.js integration example included.",
+    desc: "Works with OpenAI, Anthropic, Mistral, local models, or any HTTP endpoint. Deploy as Python SDK, FastAPI microservice, or Docker container.",
     accent: "var(--accent)",
     badge: "Provider-agnostic",
   },
   {
-    icon: "🧩",
+    Icon: Component,
     title: "Custom PII Detectors",
-    desc: "Add regex rules at runtime with add_custom_regex(). Plug in any HuggingFace NER model as a Presidio recognizer subclass. Zero config files — just code.",
+    desc: "Add regex rules at runtime with add_custom_regex(). Plug in any HuggingFace NER model as a Presidio recognizer subclass. Zero config files.",
     accent: "#ffd166",
     badge: "Extensible",
   },
   {
-    icon: "⚡",
+    Icon: Timer,
     title: "< 1ms Regex Mode",
-    desc: "Pattern-based detection has effectively zero overhead. Presidio NER runs in 50–200ms. All modes are compatible with async FastAPI services and production workloads.",
+    desc: "Pattern-based detection has effectively zero overhead. Presidio NER runs in 50-200ms. All modes work with async FastAPI and production workloads.",
     accent: "var(--accent3)",
     badge: "High performance",
   },
   {
-    icon: "🔁",
+    Icon: Radio,
     title: "Streaming Support",
-    desc: "secure_call_stream() yields rehydrated tokens as soon as they arrive from the LLM — no buffering. Plug into SSE or WebSocket endpoints for real-time privacy-safe chat applications.",
+    desc: "secure_call_stream() yields rehydrated tokens as they arrive from the LLM. Plug directly into SSE or WebSocket endpoints. No buffering.",
     accent: "var(--accent)",
     badge: "Real-time",
   },
 ];
 
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07 } },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
 export default function Features() {
   return (
-    <section
-      id="features"
-      className="py-24"
-      style={{ background: "var(--surface)" }}
-    >
+    <section id="features" className="py-28" style={{ background: "var(--surface)" }}>
       <div className="max-w-7xl mx-auto px-6">
-        {/* Heading */}
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
           <div
             className="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full"
-            style={{
-              background: "rgba(0,212,170,0.1)",
-              border: "1px solid rgba(0,212,170,0.2)",
-              color: "var(--accent2)",
-            }}
+            style={{ background: "rgba(42,230,166,0.12)", border: "1px solid rgba(42,230,166,0.24)", color: "var(--accent2)" }}
           >
             Capabilities
           </div>
@@ -90,45 +104,53 @@ export default function Features() {
             Everything you need for{" "}
             <span className="gradient-text">privacy-first AI</span>
           </h2>
-          <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
+          <p className="text-base max-w-lg mx-auto" style={{ color: "var(--text-muted)" }}>
             Built for production. Designed for compliance. Zero compromise on LLM utility.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Feature grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
           {features.map((f) => (
-            <div
-              key={f.title}
-              className="rounded-2xl p-5 card-hover"
-              style={{
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderTop: `3px solid ${f.accent}`,
-              }}
-            >
-              <div className="text-2xl mb-3">{f.icon}</div>
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="text-sm font-bold leading-tight" style={{ color: "var(--text)" }}>
-                  {f.title}
-                </h3>
-              </div>
-              <span
-                className="inline-block text-xs px-2 py-0.5 rounded-full mb-3 font-semibold"
+            <motion.div key={f.title} variants={item}>
+              <GlowCard
+                glowColor={`${f.accent}50`}
+                className="h-full rounded-2xl p-5 card-hover flex flex-col gap-3"
                 style={{
-                  background: `${f.accent}20`,
-                  color: f.accent,
-                  border: `1px solid ${f.accent}40`,
+                  background: "linear-gradient(160deg, rgba(12, 21, 33, 0.9), rgba(8, 14, 24, 0.86))",
+                  border: "1px solid var(--border)",
+                  borderTop: `2px solid ${f.accent}`,
                 }}
               >
-                {f.badge}
-              </span>
-              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                {f.desc}
-              </p>
-            </div>
+                <div className="flex items-start justify-between gap-2">
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: `${f.accent}12`, border: `1px solid ${f.accent}28` }}
+                  >
+                    <f.Icon size={16} strokeWidth={1.75} color={f.accent} />
+                  </div>
+                  <span
+                    className="shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold"
+                    style={{ background: `${f.accent}18`, color: f.accent, border: `1px solid ${f.accent}35` }}
+                  >
+                    {f.badge}
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold leading-snug" style={{ color: "var(--text)" }}>
+                  {f.title}
+                </h3>
+                <p className="text-xs leading-relaxed flex-1" style={{ color: "var(--text-muted)" }}>
+                  {f.desc}
+                </p>
+              </GlowCard>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

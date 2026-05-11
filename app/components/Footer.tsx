@@ -4,11 +4,10 @@ import { Shield, GitBranch } from "lucide-react";
 export default function Footer() {
   return (
     <footer style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}>
-      {/* CTA band */}
       <div
         className="py-20"
         style={{
-          background: "linear-gradient(135deg, rgba(108,99,255,0.1) 0%, rgba(0,212,170,0.06) 100%)",
+          background: "linear-gradient(135deg, rgba(0,194,255,0.12) 0%, rgba(42,230,166,0.08) 100%)",
         }}
       >
         <div className="max-w-3xl mx-auto px-6 text-center">
@@ -23,7 +22,7 @@ export default function Footer() {
             <a
               href="#quickstart"
               className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm transition-opacity hover:opacity-90"
-              style={{ background: "var(--accent)", color: "#fff" }}
+              style={{ background: "linear-gradient(130deg, var(--accent), var(--accent2))", color: "#032033" }}
             >
               Get started now
             </a>
@@ -31,16 +30,8 @@ export default function Footer() {
               href="https://github.com/neretj/llm-pii-firewall"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm border transition-colors"
-              style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--accent)";
-                e.currentTarget.style.color = "var(--text)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "var(--border)";
-                e.currentTarget.style.color = "var(--text-muted)";
-              }}
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm border transition-colors hover:border-[var(--accent)] hover:text-[var(--text)]"
+              style={{ borderColor: "var(--border)", color: "var(--text-muted)", background: "rgba(13,22,34,0.5)" }}
             >
               <GitBranch size={16} /> View on GitHub
             </a>
@@ -48,14 +39,13 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <div
             className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)" }}
+            style={{ background: "rgba(0,194,255,0.15)", border: "1px solid rgba(0,194,255,0.3)" }}
           >
-            <Shield size={14} color="#6c63ff" />
+            <Shield size={14} color="var(--accent)" />
           </div>
           <span className="text-sm font-bold" style={{ color: "var(--text)" }}>
             PII Firewall

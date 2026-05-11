@@ -6,12 +6,18 @@ import { Copy, Check } from "lucide-react";
 
 function CopyButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code).then(() => {
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
       setCopied(true);
+      setCopyError(false);
       setTimeout(() => setCopied(false), 2000);
-    });
+    } catch {
+      setCopyError(true);
+      setTimeout(() => setCopyError(false), 2200);
+    }
   };
 
   return (
@@ -19,14 +25,16 @@ function CopyButton({ code }: { code: string }) {
       onClick={handleCopy}
       className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg transition-all"
       style={{
-        color: copied ? "var(--accent2)" : "var(--text-muted)",
-        background: copied ? "rgba(0,212,170,0.1)" : "rgba(255,255,255,0.05)",
-        border: `1px solid ${copied ? "rgba(0,212,170,0.3)" : "var(--border)"}`,
+        color: copied ? "var(--accent2)" : copyError ? "var(--accent3)" : "var(--text-muted)",
+        background: copied ? "rgba(0,212,170,0.1)" : copyError ? "rgba(255,143,94,0.1)" : "rgba(255,255,255,0.05)",
+        border: `1px solid ${copied ? "rgba(0,212,170,0.3)" : copyError ? "rgba(255,143,94,0.35)" : "var(--border)"}`,
       }}
+      aria-live="polite"
+      aria-label={copied ? "Code copied" : copyError ? "Copy failed" : "Copy code"}
       title="Copy to clipboard"
     >
       {copied ? <Check size={12} /> : <Copy size={12} />}
-      {copied ? "Copied!" : "Copy"}
+      {copied ? "Copied!" : copyError ? "Retry" : "Copy"}
     </button>
   );
 }
@@ -97,7 +105,7 @@ export default function Quickstart() {
         <div className="text-center mb-16">
           <div
             className="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full"
-            style={{ background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)", color: "var(--accent)" }}
+            style={{ background: "rgba(0,194,255,0.1)", border: "1px solid rgba(0,194,255,0.24)", color: "var(--accent)" }}
           >
             Quick Start
           </div>
@@ -111,7 +119,7 @@ export default function Quickstart() {
 
         {/* Steps */}
         <div className="space-y-6 mb-16">
-          {installSteps.map((s, i) => (
+          {installSteps.map((s) => (
             <div
               key={s.step}
               className="rounded-2xl overflow-hidden"
@@ -120,11 +128,11 @@ export default function Quickstart() {
               {/* Step header */}
               <div
                 className="flex items-center gap-4 px-6 py-4 border-b"
-                style={{ background: "var(--surface2)", borderColor: "var(--border)" }}
+                style={{ background: "#0c1623", borderColor: "var(--border)" }}
               >
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-                  style={{ background: "var(--accent)", color: "#fff" }}
+                  style={{ background: "linear-gradient(130deg, var(--accent), var(--accent2))", color: "#032033" }}
                 >
                   {s.step}
                 </div>
@@ -134,7 +142,7 @@ export default function Quickstart() {
               </div>
 
               {/* Code */}
-              <div style={{ background: "#0d1117" }}>
+              <div style={{ background: "#08111c" }}>
                 <div className="flex items-center justify-between px-4 pt-3 pb-0">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#ff5f57" }} />
@@ -146,7 +154,7 @@ export default function Quickstart() {
                 <pre
                   className="p-6 text-sm overflow-x-auto"
                   style={{
-                    color: "#c9d1d9",
+                    color: "#d6e7f7",
                     fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
                     lineHeight: 1.7,
                   }}
@@ -159,8 +167,8 @@ export default function Quickstart() {
                 <div
                   className="px-6 py-3 text-xs border-t"
                   style={{
-                    background: "rgba(108,99,255,0.06)",
-                    borderColor: "rgba(108,99,255,0.2)",
+                    background: "rgba(0,194,255,0.06)",
+                    borderColor: "rgba(0,194,255,0.2)",
                     color: "var(--text-muted)",
                   }}
                 >
@@ -187,7 +195,7 @@ export default function Quickstart() {
               <div
                 className="px-4 py-3 text-xs font-bold border-b flex items-center justify-between"
                 style={{
-                  background: "var(--surface2)",
+                  background: "#0c1623",
                   borderColor: "var(--border)",
                   color: "var(--text-muted)",
                 }}
@@ -198,8 +206,8 @@ export default function Quickstart() {
               <pre
                 className="p-4 text-xs overflow-x-auto"
                 style={{
-                  background: "#0d1117",
-                  color: "#c9d1d9",
+                  background: "#08111c",
+                  color: "#d6e7f7",
                   fontFamily: "monospace",
                   lineHeight: 1.6,
                   whiteSpace: "pre-wrap",
