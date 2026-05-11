@@ -69,7 +69,7 @@ export default function HowItWorks() {
               color: "var(--accent)",
             }}
           >
-            Architecture
+            How it works
           </div>
           <h2 className="text-4xl font-black tracking-tight mb-4" style={{ color: "var(--text)" }}>
             Detect · Anonymize · Rehydrate

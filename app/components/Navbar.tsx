@@ -1,20 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Shield, GitBranch, Menu, X, Star } from "lucide-react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { Shield, GitBranch, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navLinks = [
+const homeSectionLinks = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Domains", href: "#domains" },
   { label: "Backends", href: "#backends" },
   { label: "Quick start", href: "#quickstart" },
 ];
 
+const docsLink = { label: "Documentation", href: "/documentation" };
+
 export default function Navbar() {
+  const pathname = usePathname();
+  const isDocsPage = pathname === "/documentation";
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState("#how-it-works");
+  const [activeHref, setActiveHref] = useState(() => (isDocsPage ? "/documentation" : "#how-it-works"));
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -23,7 +29,9 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const sections = navLinks
+    if (isDocsPage) return;
+
+    const sections = homeSectionLinks
       .map((link) => document.getElementById(link.href.slice(1)))
       .filter((section): section is HTMLElement => Boolean(section));
 
@@ -47,7 +55,12 @@ export default function Navbar() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [isDocsPage]);
+
+  const navLinks = isDocsPage
+    ? [{ label: "Home", href: "/" }, docsLink]
+    : [...homeSectionLinks, docsLink];
+  const currentActiveHref = isDocsPage ? "/documentation" : activeHref;
 
   return (
     <motion.header
@@ -66,7 +79,7 @@ export default function Navbar() {
         Skip to content
       </a>
       <div className="max-w-7xl mx-auto px-6 h-[70px] flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <div
             className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-105"
             style={{ background: "rgba(0,194,255,0.16)", border: "1px solid rgba(0,194,255,0.38)" }}
@@ -76,22 +89,37 @@ export default function Navbar() {
           <span className="text-sm font-bold tracking-wide" style={{ color: "var(--text)" }}>
             PII Firewall
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-1.5 tech-pill rounded-xl px-2 py-1">
           {navLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              aria-current={activeHref === l.href ? "page" : undefined}
-              className="px-3 py-1.5 text-sm rounded-lg transition-all duration-200 hover:bg-white/5 hover:text-[var(--text)]"
-              style={{
-                color: activeHref === l.href ? "var(--text)" : "var(--text-muted)",
-                background: activeHref === l.href ? "rgba(0,194,255,0.12)" : "transparent",
-              }}
-            >
-              {l.label}
-            </a>
+            l.href.startsWith("/") ? (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={currentActiveHref === l.href ? "page" : undefined}
+                className="px-3 py-1.5 text-sm rounded-lg transition-all duration-200 hover:bg-white/5 hover:text-[var(--text)]"
+                style={{
+                  color: currentActiveHref === l.href ? "var(--text)" : "var(--text-muted)",
+                  background: currentActiveHref === l.href ? "rgba(0,194,255,0.12)" : "transparent",
+                }}
+              >
+                {l.label}
+              </Link>
+            ) : (
+              <a
+                key={l.href}
+                href={l.href}
+                aria-current={currentActiveHref === l.href ? "page" : undefined}
+                className="px-3 py-1.5 text-sm rounded-lg transition-all duration-200 hover:bg-white/5 hover:text-[var(--text)]"
+                style={{
+                  color: currentActiveHref === l.href ? "var(--text)" : "var(--text-muted)",
+                  background: currentActiveHref === l.href ? "rgba(0,194,255,0.12)" : "transparent",
+                }}
+              >
+                {l.label}
+              </a>
+            )
           ))}
         </nav>
 
@@ -105,21 +133,16 @@ export default function Navbar() {
           >
             <GitBranch size={14} />
             GitHub
-            <span
-              className="text-xs px-1.5 py-0.5 rounded-full font-mono"
-              style={{ background: "rgba(0,194,255,0.14)", color: "var(--accent)" }}
+          </a>
+          {!isDocsPage && (
+            <a
+              href="#quickstart"
+              className="text-sm px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90 hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(130deg, var(--accent), var(--accent2))", color: "#032033" }}
             >
-              <Star size={10} className="inline mr-0.5 mb-0.5" />
-              OSS
-            </span>
-          </a>
-          <a
-            href="#quickstart"
-            className="text-sm px-4 py-2 rounded-lg font-semibold transition-all hover:opacity-90 hover:-translate-y-0.5"
-            style={{ background: "linear-gradient(130deg, var(--accent), var(--accent2))", color: "#032033" }}
-          >
-            Get started
-          </a>
+              Get started
+            </a>
+          )}
         </div>
 
         <button
@@ -144,30 +167,48 @@ export default function Navbar() {
           >
             <div className="px-6 py-4 space-y-1">
               {navLinks.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  aria-current={activeHref === l.href ? "page" : undefined}
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2.5 text-sm rounded-lg transition-colors hover:text-[var(--text)]"
-                  style={{
-                    color: activeHref === l.href ? "var(--text)" : "var(--text-muted)",
-                    background: activeHref === l.href ? "rgba(0,194,255,0.1)" : "transparent",
-                  }}
-                >
-                  {l.label}
-                </a>
+                l.href.startsWith("/") ? (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    aria-current={currentActiveHref === l.href ? "page" : undefined}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2.5 text-sm rounded-lg transition-colors hover:text-[var(--text)]"
+                    style={{
+                      color: currentActiveHref === l.href ? "var(--text)" : "var(--text-muted)",
+                      background: currentActiveHref === l.href ? "rgba(0,194,255,0.1)" : "transparent",
+                    }}
+                  >
+                    {l.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    aria-current={currentActiveHref === l.href ? "page" : undefined}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2.5 text-sm rounded-lg transition-colors hover:text-[var(--text)]"
+                    style={{
+                      color: currentActiveHref === l.href ? "var(--text)" : "var(--text-muted)",
+                      background: currentActiveHref === l.href ? "rgba(0,194,255,0.1)" : "transparent",
+                    }}
+                  >
+                    {l.label}
+                  </a>
+                )
               ))}
-              <div className="pt-3 border-t" style={{ borderColor: "var(--border)" }}>
-                <a
-                  href="#quickstart"
-                  onClick={() => setMobileOpen(false)}
-                  className="block text-center px-4 py-2.5 rounded-lg text-sm font-semibold"
-                  style={{ background: "linear-gradient(130deg, var(--accent), var(--accent2))", color: "#032033" }}
-                >
-                  Get started
-                </a>
-              </div>
+              {!isDocsPage && (
+                <div className="pt-3 border-t" style={{ borderColor: "var(--border)" }}>
+                  <a
+                    href="#quickstart"
+                    onClick={() => setMobileOpen(false)}
+                    className="block text-center px-4 py-2.5 rounded-lg text-sm font-semibold"
+                    style={{ background: "linear-gradient(130deg, var(--accent), var(--accent2))", color: "#032033" }}
+                  >
+                    Get started
+                  </a>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

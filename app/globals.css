@@ -243,6 +243,69 @@ body::after {
   color: #d6e7f7 !important;
 }
 
+/* Docs light-mode syntax highlighting overrides */
+.docs-code-light .hljs {
+  color: #1f3550 !important;
+  background: transparent !important;
+}
+
+.docs-code-light .hljs-comment,
+.docs-code-light .hljs-quote {
+  color: #5c6f86 !important;
+}
+
+.docs-code-light .hljs-keyword,
+.docs-code-light .hljs-selector-tag,
+.docs-code-light .hljs-literal,
+.docs-code-light .hljs-built_in,
+.docs-code-light .hljs-name,
+.docs-code-light .hljs-title.class_,
+.docs-code-light .hljs-meta,
+.docs-code-light .hljs-decorator,
+.docs-code-light .hljs-operator,
+.docs-code-light .hljs-doctag {
+  color: #7b2cbf !important;
+}
+
+.docs-code-light .hljs-string,
+.docs-code-light .hljs-meta .hljs-string,
+.docs-code-light .hljs-regexp {
+  color: #0f766e !important;
+}
+
+.docs-code-light .hljs-title,
+.docs-code-light .hljs-function .hljs-title,
+.docs-code-light .hljs-title.function_,
+.docs-code-light .hljs-attr,
+.docs-code-light .hljs-property,
+.docs-code-light .hljs-attribute {
+  color: #005a9c !important;
+}
+
+.docs-code-light .hljs-number,
+.docs-code-light .hljs-symbol,
+.docs-code-light .hljs-bullet,
+.docs-code-light .hljs-variable,
+.docs-code-light .hljs-template-variable {
+  color: #9a3412 !important;
+}
+
+.docs-code-light .hljs-type,
+.docs-code-light .hljs-class,
+.docs-code-light .hljs-section,
+.docs-code-light .hljs-tag {
+  color: #166534 !important;
+}
+
+.docs-code-light .hljs-params {
+  color: #1f3550 !important;
+}
+
+.docs-code-light .hljs-subst,
+.docs-code-light .hljs-punctuation {
+  color: #334e68 !important;
+}
+
 .integrations-code code {
   text-shadow: 0 0 0.001px currentColor;
 }
