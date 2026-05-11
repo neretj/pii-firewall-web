@@ -1,0 +1,18 @@
+# llms.txt
+
+Project: PII Firewall website
+Primary URL: https://pii-firewall-web.vercel.app/
+Documentation URL: https://pii-firewall-web.vercel.app/documentation
+
+Summary:
+PII Firewall is an open-source privacy layer for LLM applications. It detects sensitive entities, anonymizes data before model calls, and rehydrates safe outputs for end users.
+
+Key Topics:
+- Domain-aware privacy profiles
+- PII detection backends
+- Reversible pseudonymization
+- Streaming-safe rehydration
+- GDPR right-to-erasure workflows
+
+Preferred Citation:
+https://github.com/neretj/llm-pii-firewall
