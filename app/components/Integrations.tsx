@@ -1,18 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { Copy, Check, Workflow } from "lucide-react";
 import { siAnthropic, siFastapi, siLangchain } from "simple-icons";
+import hljs from "highlight.js/lib/core";
+import python from "highlight.js/lib/languages/python";
+import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import json from "highlight.js/lib/languages/json";
+import bash from "highlight.js/lib/languages/bash";
+
+hljs.registerLanguage("python", python);
+hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("typescript", typescript);
+hljs.registerLanguage("json", json);
+hljs.registerLanguage("bash", bash);
 
 type Integration = {
   id: string;
   label: string;
   subtitle: string;
   iconColor: string;
-  icon: JSX.Element;
+  icon: ReactNode;
   stackTag: string;
+  language: "python" | "javascript" | "typescript" | "json" | "bash";
   code: string;
 };
+
+function escapeHtml(raw: string) {
+  return raw
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 function BrandIcon({
   path,
@@ -56,6 +78,7 @@ const integrations: Integration[] = [
     icon: <OpenAIMark />,
     iconColor: "#10a37f",
     stackTag: "Chat Completions",
+    language: "python",
     code: `from openai import OpenAI
 from privacy_firewall import create_firewall
 
@@ -81,6 +104,7 @@ print(result.final_text)  # real names restored`,
     icon: <BrandIcon path={siAnthropic.path} title={siAnthropic.title} color="#d97757" />,
     iconColor: "#d97757",
     stackTag: "Claude Messages",
+    language: "python",
     code: `import anthropic
 from privacy_firewall import create_firewall
 
@@ -109,6 +133,7 @@ print(result.final_text)  # "Patient Ana García, DNI 12345678A, with hypertensi
     icon: <BrandIcon path={siLangchain.path} title={siLangchain.title} color="#1c7ed6" />,
     iconColor: "#1c7ed6",
     stackTag: "Runnable wrapper",
+    language: "python",
     code: `from langchain_openai import ChatOpenAI
 from privacy_firewall import create_firewall
 
@@ -132,6 +157,7 @@ print(result.final_text)  # real email restored in reply`,
     icon: <BrandIcon path={siFastapi.path} title={siFastapi.title} color="#00b89c" />,
     iconColor: "#009688",
     stackTag: "HTTP endpoint",
+    language: "python",
     code: `from fastapi import FastAPI
 from privacy_firewall import PrivacyFirewallSDK
 
@@ -153,6 +179,7 @@ async def chat(req: dict):
     icon: <Workflow size={15} color="#86b7ff" strokeWidth={2.2} aria-hidden="true" />,
     iconColor: "#86b7ff",
     stackTag: "SSE / WebSocket",
+    language: "python",
     code: `from privacy_firewall import create_firewall
 
 firewall = create_firewall("healthcare", detector_backend="presidio")
@@ -205,9 +232,27 @@ function CopyBtn({ code }: { code: string }) {
   );
 }
 
+function languageLabel(language: Integration["language"]) {
+  if (language === "python") return "Python";
+  if (language === "javascript") return "JavaScript";
+  if (language === "typescript") return "TypeScript";
+  if (language === "json") return "JSON";
+  return "Bash";
+}
+
 export default function Integrations() {
   const [active, setActive] = useState("openai");
   const integ = integrations.find((i) => i.id === active)!;
+  const highlightedCode = useMemo(() => {
+    try {
+      return hljs.highlight(integ.code, {
+        language: integ.language,
+        ignoreIllegals: true,
+      }).value;
+    } catch {
+      return escapeHtml(integ.code);
+    }
+  }, [integ.code, integ.language]);
 
   return (
     <section
@@ -317,9 +362,21 @@ export default function Integrations() {
                   <span className="text-sm font-bold block" style={{ color: "var(--text)" }}>
                     {integ.label}
                   </span>
-                  <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                    {integ.stackTag}
-                  </span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+                      {integ.stackTag}
+                    </span>
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded"
+                      style={{
+                        color: "#9ac9ff",
+                        background: "rgba(90,214,255,0.12)",
+                        border: "1px solid rgba(90,214,255,0.35)",
+                      }}
+                    >
+                      {languageLabel(integ.language)}
+                    </span>
+                  </div>
                 </div>
               </div>
               <CopyBtn code={integ.code} />
@@ -327,7 +384,7 @@ export default function Integrations() {
 
             {/* Code body */}
             <pre
-              className="p-6 text-sm overflow-x-auto"
+              className="p-6 text-sm overflow-x-auto integrations-code"
               style={{
                 background: "#08111c",
                 color: "#d6e7f7",
@@ -336,7 +393,10 @@ export default function Integrations() {
                 minHeight: "340px",
               }}
             >
-              <code>{integ.code}</code>
+              <code
+                className={`hljs language-${integ.language}`}
+                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+              />
             </pre>
           </div>
         </div>
