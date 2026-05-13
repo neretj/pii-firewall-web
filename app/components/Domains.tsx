@@ -20,6 +20,7 @@ const domains = [
     ],
     codeInput: `"Paciente Ana García, DNI 12345678A, 43 años,\nhipertensión. Consulta: 15/03/2024.\nEmail: ana@clinic.es. Prescripción: enalapril 10mg."`,
     codeOutput: `"Paciente [PERSON_001], [REDACTED], 40-49,\nhipertensión. Consulta: 2024.\nEmail: [REDACTED]. Prescripción: enalapril 10mg."`,
+    firewallCode: 'firewall = create_firewall("healthcare")',
   },
   {
     id: "finance",
@@ -38,6 +39,7 @@ const domains = [
     ],
     codeInput: `"Cliente María López, tarjeta 4111111111111111,\ntransferencia de 2.500€. IBAN: ES1234567890123456789012.\nDiagnóstico: diabetes tipo 2."`,
     codeOutput: `"Cliente [PERSON_001], tarjeta ************1111,\ntransferencia de 2.500€. IBAN: [IBAN_001].\nDiagnóstico: [REDACTED]."`,
+    firewallCode: 'firewall = create_firewall("finance")',
   },
   {
     id: "legal",
@@ -55,6 +57,7 @@ const domains = [
     ],
     codeInput: `"El demandante Juan Pérez, DNI 12345678A,\npresentó recurso el 15 de marzo de 2024.\nAntecedentes: esquizofrenia, risperidona 2mg."`,
     codeOutput: `"El demandante [PERSON_001], [REDACTED],\npresentó recurso el Mar 2024.\nAntecedentes: [REDACTED], [REDACTED]."`,
+    firewallCode: 'firewall = create_firewall("legal")',
   },
   {
     id: "generic",
@@ -72,6 +75,23 @@ const domains = [
     ],
     codeInput: `"Contact John Doe at john@company.com.\nDiagnosis: hypertension. IBAN: ES12345678.\nCall +1 555-123-4567."`,
     codeOutput: `"Contact [PERSON_001] at [REDACTED].\nDiagnosis: [REDACTED]. IBAN: [REDACTED].\nCall [REDACTED]."`,
+    firewallCode: 'firewall = create_firewall("generic")',
+  },
+  {
+    id: "custom",
+    Icon: Globe,
+    label: "Custom",
+    color: "var(--accent3)",
+    tagline: "Start from a preset, then override only the parts you need.",
+    keeps: ["Your domain-specific safe text"],
+    transforms: [
+      { action: "PSEUDONYMIZE", entity: "EMPLOYEE_ID", example: "EMP-1042 → [EMPLOYEE_ID_001]" },
+      { action: "REDACT", entity: "SENSITIVE_ID", example: "XK-8811 → [REDACTED]" },
+      { action: "KEEP", entity: "CASE_NOTE", example: "approved for release → approved for release" },
+    ],
+    codeInput: `"Employee EMP-1042 approved for release. Case note: approved for release. Sensitive ID: XK-8811."`,
+    codeOutput: `"Employee [EMPLOYEE_ID_001] approved for release. Case note: approved for release. Sensitive ID: [REDACTED]."`,
+    firewallCode: `from privacy_firewall import create_custom_profile, EntityDisposition, DispositionAction, create_firewall\n\nprofile = create_custom_profile("my_domain")\nprofile.add_disposition(EntityDisposition(\n    entity_type="EMPLOYEE_ID",\n    action=DispositionAction.PSEUDONYMIZE,\n))\nprofile.add_disposition(EntityDisposition(\n    entity_type="SENSITIVE_ID",\n    action=DispositionAction.REDACT,\n))\n\nfirewall = create_firewall("generic", profile=profile)`,
   },
 ];
 
@@ -282,12 +302,12 @@ export default function Domains() {
               </div>
 
               <div className="mt-6 p-3 rounded-xl text-xs" style={{ background: "rgba(0,194,255,0.08)", border: "1px solid rgba(0,194,255,0.18)", color: "var(--text-muted)" }}>
-                <code
-                  className="block"
-                  style={{ fontFamily: "monospace", color: "#d6e7f7" }}
+                <pre
+                  className="block whitespace-pre-wrap"
+                  style={{ fontFamily: "monospace", color: "#d6e7f7", margin: 0 }}
                 >
-                  firewall = create_firewall(<span style={{ color: "#f1fa8c" }}>&quot;{domain.id}&quot;</span>)
-                </code>
+                  {domain.firewallCode}
+                </pre>
               </div>
             </div>
           </div>

@@ -97,7 +97,7 @@ export const docsSections: DocSection[] = [
       {
         id: "profiles-presets",
         title: "Built-in presets",
-        body: "Pass the name string to create_firewall().",
+        body: "Pass the preset name to create_firewall(). Treat presets as starting points, then copy and customize the profile or backend mix. See the custom profile example below.",
         table: {
           columns: ["Profile", "Keeps", "Pseudonymizes", "Transforms"],
           rows: [
@@ -138,25 +138,25 @@ export const docsSections: DocSection[] = [
   {
     id: "backends",
     title: "Detection Backends",
-    intro: "Switch backends with a single parameter. No other code changes.",
+    intro: "Switch backends with a single parameter. Start from a preset, then customize the profile or backend mix with custom regex, recognizers, or model IDs.",
     subsections: [
       {
         id: "backends-table",
         title: "Backend comparison",
-        body: "presidio is the default for production. regex for zero-dependency paths. hybrid for maximum coverage.",
+        body: "presidio is the default for production. regex for zero-dependency paths. hybrid is the fallback when you want maximum coverage.",
         table: {
           columns: ["Backend", "Extra install", "Best for", "Latency"],
           rows: [
             ["regex", "(none)", "Structured IDs, emails, phones", "< 1 ms"],
             ["presidio", "[presidio] + spaCy model", "Named entities — best balance", "50–200 ms"],
-            ["hybrid", "[presidio,langdetect]", "Regex + Presidio combined", "50–250 ms"],
             ["gliner", "[gliner]", "Zero-shot NER", "100–400 ms"],
             ["transformers", "[transformers]", "Biomedical NER (d4data, BC5CDR)", "100–500 ms"],
             ["opf", "[opf]", "Language-agnostic token classifier", "50–200 ms"],
             ["nemotron", "[opf]", "High recall on free text", "100–300 ms"],
+            ["hybrid", "[presidio,langdetect]", "Regex + Presidio combined", "50–250 ms"],
           ],
         },
-        code: "firewall = create_firewall(\"healthcare\", detector_backend=\"presidio\")   # recommended\nfirewall = create_firewall(\"healthcare\", detector_backend=\"regex\")      # zero deps\nfirewall = create_firewall(\"healthcare\", detector_backend=\"hybrid\")     # max coverage\nfirewall = create_firewall(\"healthcare\", detector_backend=\"gliner\")     # zero-shot NER\nfirewall = create_firewall(\n    \"healthcare\",\n    detector_backend=\"transformers\",\n    transformer_model_id=\"d4data/biomedical-ner-all\",\n)",
+        code: "firewall = create_firewall(\"healthcare\", detector_backend=\"presidio\")   # recommended\nfirewall = create_firewall(\"healthcare\", detector_backend=\"regex\")      # zero deps\nfirewall = create_firewall(\"healthcare\", detector_backend=\"gliner\")      # zero-shot NER\nfirewall = create_firewall(\"healthcare\", detector_backend=\"transformers\", transformer_model_id=\"d4data/biomedical-ner-all\")\nfirewall = create_firewall(\"healthcare\", detector_backend=\"opf\")          # token classifier\nfirewall = create_firewall(\"healthcare\", detector_backend=\"hybrid\")        # max coverage",
       },
     ],
   },
@@ -165,7 +165,7 @@ export const docsSections: DocSection[] = [
   {
     id: "integrations",
     title: "Integrations",
-    intro: "Pass any callable(prompt: str) -> str as llm_client. Works with OpenAI, Anthropic, LangChain, local models — anything.",
+    intro: "Pass any callable(prompt: str) -> str as llm_client. Works with OpenAI, Anthropic, LangChain, local models — anything. For FastAPI, use the microservice pattern below.",
     subsections: [
       {
         id: "integrations-openai",
@@ -194,13 +194,6 @@ export const docsSections: DocSection[] = [
         body: "Yields rehydrated tokens as they arrive from the model. No buffering needed.",
         tags: ["Streaming", "SSE"],
         code: "# secure_call_stream yields tokens with real names already restored\nfor token in firewall.secure_call_stream(\n    text=user_input,\n    context=ctx,\n    llm_client=your_streaming_llm,\n):\n    yield token   # send to SSE / WebSocket immediately",
-      },
-      {
-        id: "integrations-fastapi",
-        title: "FastAPI route",
-        body: "",
-        tags: ["FastAPI"],
-        code: "from fastapi import FastAPI\nfrom privacy_firewall import PrivacyFirewallSDK\n\napp = FastAPI()\nsdk = PrivacyFirewallSDK.create(domain=\"healthcare\", detector_backend=\"presidio\")\n\n@app.post(\"/chat\")\nasync def chat(req: dict):\n    ctx         = req[\"context\"]\n    anon        = sdk.anonymize_text(text=req[\"message\"], context=ctx)\n    llm_out     = await call_your_llm(anon.sanitized_text)\n    return {\"response\": sdk.rehydrate_text(text=llm_out, context=ctx)}",
       },
     ],
   },
@@ -328,7 +321,7 @@ export const docsSections: DocSection[] = [
       {
         id: "custom-models-hf-hybrid",
         title: "Combine HF model with regex (Presidio hybrid)",
-        body: "Wrap the HF model as a Presidio recognizer to mix it with locale regex patterns in the same pipeline.",
+        body: "Wrap the HF model as a Presidio recognizer so you can mix it with locale regex patterns in one pipeline.",
         code: "from presidio_analyzer import EntityRecognizer, RecognizerResult\nfrom transformers import pipeline\n\nclass HFRecognizer(EntityRecognizer):\n    def __init__(self, model_id: str):\n        super().__init__(supported_entities=[\"PERSON\", \"ORG\", \"LOC\"])\n        self._pipe = pipeline(\"ner\", model=model_id, aggregation_strategy=\"simple\")\n    def load(self): ...\n    def analyze(self, text, entities, nlp_artifacts):\n        return [\n            RecognizerResult(s[\"entity_group\"], s[\"start\"], s[\"end\"], s[\"score\"])\n            for s in self._pipe(text)\n        ]\n\nfirewall = create_firewall(\n    \"healthcare\",\n    detector_backend=\"presidio\",\n    custom_recognizers=[HFRecognizer(\"dslim/bert-base-NER\")],\n)",
       },
     ],
